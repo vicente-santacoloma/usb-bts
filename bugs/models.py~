@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Application(models.Model):
   name = models.CharField(max_length=30, unique=True)
@@ -22,6 +23,8 @@ class Bug(models.Model):
   replication = models.TextField(max_length=200)
   visits = models.IntegerField()
   bug_origin = models.ForeignKey('Bug')
+  user_reports = models.ForeignKey(User, related_name='user_reports')
+  user_resolves = models.ForeignKey(User, related_name='user_resolves')
   
   def __unicode__(self):
     return self.name
@@ -37,6 +40,7 @@ class Component(models.Model):
 class Comment(models.Model):
   content = models.TextField()
   bug = models.ForeignKey(Bug)
+  user_notes = models.ForeignKey(User)
   
   def __unicode__(self):
     return self.content
