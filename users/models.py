@@ -1,17 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 # Create your models here.
 
-class User(models.Model):
-    username = models.CharField(max_length=16, unique=True)
-    email = models.EmailField(max_length=254)
-    password = models.CharField(max_length=128)
-    USERS_CHOICES = (
-        ('A', 'Administrator'),
-        ('G', 'Gate Keeper'),
-        ('U', 'User'),
-    )
-    role = models.CharField(max_length=1, choices=USERS_CHOICES)
+class UserProfile(models.Model):
+    # Required field
+    user = models.OneToOneField(User)
+    
+    # Additional fields
+    is_gate_keeper = models.BooleanField()
 
-    def __unicode__(self):
-        return "Username: " + self.username + "\nEmail: " + self.email + "\nRole: " + self.get_role_display()
+# Asegurarse de crear el UserProfile luego de guardar una instancia de usuario
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
