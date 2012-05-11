@@ -1,0 +1,8 @@
+<ul>
+  <li><a href="users/sign_up/">Sign up </a></li>
+  {% if not user.is_authenticated  %}
+  	<li><a href="users/log_in/">Log in</a></li>
+  {% else %}
+  	<li><a href="users/log_out/">Log out</a></li>
+  {% endif %}
+</ul>

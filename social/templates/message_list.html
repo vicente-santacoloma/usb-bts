@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Messages</h2>
+    <table>
+    <theader>
+    <th>Sent on</th>
+    <th>From</th>
+    <th>Content</th>
+    </theader>
+        {% for message in object_list %}
+	        <tr>
+		        <td>{{ message.date_sent }}</td>
+		        <td>{{ message.receiver.username }}</td>
+		        <td>{{ message.content|truncatechars:30 }}</td>
+	        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

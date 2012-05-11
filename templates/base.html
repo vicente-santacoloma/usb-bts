@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div id="wrap">
+            <div id="header">
+                {% block header %}
+            	
+            	{% endblock %}
+            </div>
+            <div id="top_menu">
+            	{% block top_menu %}
+            	
+            	{% endblock %} 
+            </div>
+            <div id="content">
+                	{% block content %}
+                	
+                	{% endblock %}
+            </div>
+	        <div id="footer">
+		        {% block footer %}
+		        
+		        {% endblock %}	
+	        </div>
+        </div>
+    </body>
+</html>

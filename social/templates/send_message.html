@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+# Display a form to send messages to another user
+# requires a variable 'message' of type MessageForm
+
+{% block content %}
+
+<form action="/social/send_message/" method='POST'>
+{% csrf_token %}
+<table>
+	{{ message.as_table }}
+	</table>
+	<input type="submit" value="Send" />
+</form>
+
+{% endblock %}
