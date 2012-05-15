@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+# Display a form to report a bug
+# requires a variable 'form' of type BugForm
+
+{% block content %}
+
+<form action="/bugs/create/" method='POST'>
+{% csrf_token %}
+	<table>
+	{{ form.as_table }}
+	</table>
+	<input type="submit" value="Report" />
+</form>
+
+{% endblock %}
