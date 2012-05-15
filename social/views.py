@@ -1,10 +1,12 @@
 # Create your views here.
-from django.core.urlresolvers import reverse
+from debian.debtags import reverse
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from social.forms import MessageForm
-from django.contrib.auth.decorators import login_required
+from social.models import Message
+
 
 @login_required
 def send_message(request):
@@ -19,5 +21,7 @@ def send_message(request):
          m.save()
          return HttpResponseRedirect(reverse('BTS_home'))
 
-def read_message(request):
-    pass
+@login_required
+def message_list(request):
+    return render_to_response('message_list.html',
+                              {'object_list': Message.objects.filter(sender=request.user)})

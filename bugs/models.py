@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.template.defaultfilters import default
 
 class Application(models.Model):
   name = models.CharField(max_length=30, unique=True)
@@ -8,30 +9,35 @@ class Application(models.Model):
     return self.name
 
 class Bug(models.Model):
-  name = models.CharField(max_length=50)
   STATUS_CHOICES = (
-    ('U', 'Unconfirmed'),
-    ('A', 'Assigned'),
-    ('R', 'Resolved'),
-    ('D', 'Duplicate'),
-    ('C', 'Closed')
+        ('U', 'Unconfirmed'),
+        ('A', 'Assigned'),
+        ('R', 'Resolved'),
+        ('D', 'Duplicate'),
+        ('C', 'Closed')
   )
-  status = models.CharField(max_length=2, choices=STATUS_CHOICES)
-  priority = models.PositiveIntegerField()
-  date_reported = models.DateTimeField('date reported')
-  date_changed = models.DateTimeField('date changed')
-  replication = models.TextField(max_length=200)
-  visits = models.IntegerField()
-  bug_origin = models.ForeignKey('Bug')
-  user_reports = models.ForeignKey(User, related_name='user_reports')
-  user_resolves = models.ForeignKey(User, related_name='user_resolves')
+  PRIORITY_CHOICES = (
+                      ('H','High'),
+                      ('N','Normal'),
+                      ('L','Low'))
+  title = models.CharField(max_length=50)  
+  status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='U')
+  priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES, default='N')
+  date_reported = models.DateTimeField('date reported', auto_now_add=True)
+  date_changed = models.DateTimeField('date changed', auto_now=True)
+  description = models.TextField()
+  replication = models.TextField(verbose_name= "How to replicate the error?")
+  visits = models.IntegerField(default=0)
+  original = models.ForeignKey('Bug', related_name='duplicates', null=True)
+  reporter = models.ForeignKey(User, related_name='bugs_reported')
+  resolver = models.ForeignKey(User, related_name='bugs_resolving', null=True)
+  component = models.ForeignKey('Component', related_name='bugs')
   
   def __unicode__(self):
     return self.name
 
 class Component(models.Model):
   name = models.CharField(max_length=30, unique=True)
-  bugs = models.ManyToManyField(Bug)
   application = models.ForeignKey(Application)
   
   def __unicode__(self):

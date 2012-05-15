@@ -6,3 +6,19 @@
   	<li><a href="users/log_out/">Log out</a></li>
   {% endif %}
 </ul>
+
+{% if user.is_authenticated %}
+<h2>Social</h2>
+
+<ul>
+	<li><a href="/social/message_list">Messages</a></li>
+</ul>
+
+{% endif %}
+
+{% if user.is_authenticated %}
+<h2>Bugs</h2>
+<ul>
+	<li><a href="/bugs/create">Report a bug</a></li>
+</ul>
+{% endif %}
