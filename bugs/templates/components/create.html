@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+# Display a form to create a Component
+# requires a variable 'form' of type ComponentForm
+
+{% block content %}
+
+<form action="/bugs/components/create/" method='POST'>
+{% csrf_token %}
+	<table>
+	{{ form.as_table }}
+	</table>
+	<input type="submit" value="Create" />
+</form>
+
+{% endblock %}

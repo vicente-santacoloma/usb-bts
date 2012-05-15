@@ -28,17 +28,17 @@ class Bug(models.Model):
   description = models.TextField()
   replication = models.TextField(verbose_name= "How to replicate the error?")
   visits = models.IntegerField(default=0)
-  original = models.ForeignKey('Bug', related_name='duplicates', null=True)
+  original = models.ForeignKey('Bug', related_name='duplicates', null=True, blank=True)
   reporter = models.ForeignKey(User, related_name='bugs_reported')
-  resolver = models.ForeignKey(User, related_name='bugs_resolving', null=True)
+  resolver = models.ForeignKey(User, related_name='bugs_resolving', null=True, blank=True)
   component = models.ForeignKey('Component', related_name='bugs')
   
   def __unicode__(self):
-    return self.name
+    return self.title
 
 class Component(models.Model):
   name = models.CharField(max_length=30, unique=True)
-  application = models.ForeignKey(Application)
+  application = models.ForeignKey(Application, related_name='components')
   
   def __unicode__(self):
     return self.name

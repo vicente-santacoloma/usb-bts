@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+# Display a list of bugs
+# requires a variable 'component' of type component
+
+{% block content %}
+
+<h1>{{ component.name }}</h1>
+
+{% if component.bugs.all %}
+
+<table border="1">
+	<theader>
+		<th>Bugs</th>
+		<th>Visits</th>
+		<th>Description</th>
+	</theader>
+{% for bug in component.bugs.all %}
+	<tr>
+		<td><a href="/bugs/browse/{{ application.id }}/{{ component.id }}/{{ bug.id}}">{{ bug.title|truncatechars:20 }}</a>	 </td>
+		<td>{{ bug.visits}} </td>
+		<td>{{ bug.description|truncatechars:40 }} </td>		
+	</tr>
+{% endfor %}
+</table>
+
+{% else %}
+	There's not bugs created in this component.
+
+{% endif %}
+
+{% endblock %}	

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+# Display a list of components
+# requires a variable 'application' of type application
+
+{% block content %}
+
+<h1>{{ application.name }}</h1>
+
+{% if application.components.all %}
+
+<table border="1">
+	<theader>
+		<th>Component</th>
+		<th>Bugs</th>
+	</theader>
+{% for component in application.components.all %}
+	<tr>
+		<td><a href="/bugs/browse/{{ application.id }}/{{ component.id }}">{{ component.name }}</a>	 </td>
+		<td>{{ component.bugs.count }} </td>		
+	</tr>
+{% endfor %}
+</table>
+
+{% else %}
+	There's not components created in this application.
+
+{% endif %}
+
+{% endblock %}	

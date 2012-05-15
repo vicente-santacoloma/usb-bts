@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+# Display a list of applications
+# requires a variable 'objects_list' of type query_set
+
+{% block content %}
+
+{% if object_list %}
+
+<table border="1">
+	<theader>
+		<th>Application</th>
+	</theader>
+{% for application in object_list %}
+	<tr>
+		<td><a href="/bugs/browse/{{ application.id }}/">{{ application.name }}</a>	 </td>	
+	</tr>
+{% endfor %}
+</table>
+
+{% else %}
+	There's not applications created.
+
+{% endif %}
+
+{% endblock %}		
