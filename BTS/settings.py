@@ -159,4 +159,7 @@ LOGGING = {
 
 AUTH_PROFILE_MODULE = 'users.UserProfile'
 
-LOGIN_URL='/users/log_in/'
+LOGIN_URL='/users/login/'
+LOGIN_REDIRECT_URL='/'
+DEFAULT_FROM_EMAIL='tamerdark@gmail.com'
+

@@ -1,9 +1,16 @@
+{% extends "base.html" %}
+
+{% block top_menu %}
+
 <ul>
   <li><a href="users/sign_up/">Sign up </a></li>
   {% if not user.is_authenticated  %}
-  	<li><a href="users/log_in/">Log in</a></li>
+  	<li><a href="users/login/">Log in</a></li>
+  	<li><a href="users/password_reset/">{{ "¿Forgot your password?" }}</a></li>
   {% else %}
-  	<li><a href="users/log_out/">Log out</a></li>
+  	<li><a href="users/change/">Update my information</a></li>
+  	<li><a href="users/password_change/">Change password</a></li>
+  	<li><a href="users/logout/">Log out</a></li>
   {% endif %}
 </ul>
 
@@ -24,3 +31,5 @@
 </ul>
 
 {% endif %}
+
+{% endblock %}
