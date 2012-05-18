@@ -1,0 +1,75 @@
+{% extends "base_bugs.html" %}
+
+# Display a form to select a component and redirect
+# to the report bug url
+# requires a variable 'form' of type SelectComponentForm
+
+{% block header %}
+	{{ block.super }}
+	<script>
+	$(document).ready(
+		function(){
+			var appDOM = $("select#id_application");
+			if( appDOM.val() != '0'){
+				var url = "/bugs/json/" + $(appDOM).val() + "/";
+                var application = $(appDOM).val();
+                $.getJSON(url, function(components) {
+                                     var options = '<option value="0">Select a component</option>';
+                                     for (var i = 0; i < components.length; i++) {
+                                        options += '<option value="' + components[i].pk + '">' + components[i].fields['name'] + '</option>';
+                                     }
+                                     $("select#id_component").html(options);
+                                     $("select#id_component option:first").attr('selected', 'selected');
+                                     $("select#id_component").attr('disabled', false);
+                                 });
+			}else{			
+			    $("select#id_component").attr('disabled',true);
+			    $("select#id_component").html("<option>Select a component</option>");			
+			}
+		    });
+		
+    $(document).ready(
+                     function() {
+                         $("select#id_application").change(function() {
+                             if ($(this).val() == '0') {
+                                 $("select#id_component").html("<option>Select a component</option>");
+                                 $("select#id_component").prop('disabled', true);
+                             }
+                             else {
+                                 var url = "/bugs/json/" + $(this).val() + "/";
+                                 var application = $(this).val();
+                                 $.getJSON(url, function(components) {
+                                     var options = '<option value="0">Select a component</option>';
+                                     for (var i = 0; i < components.length; i++) {
+                                        options += '<option value="' + components[i].pk + '">' + components[i].fields['name'] + '</option>';
+                                     }
+                                     $("select#id_component").html(options);
+                                     $("select#id_component option:first").attr('selected', 'selected');
+                                     $("select#id_component").prop('disabled', false);
+                                 });
+                             }
+                         });
+
+
+                         $("select#id_component").change(function(vent) {
+                             if ($(this).val() > 0) {
+                                 $("form").submit();
+                             }
+                             
+                         });
+                     });
+    
+
+	</script>
+{% endblock %}
+
+{% block content %}
+<form action="." method='POST'>
+{% csrf_token %}
+	<table>
+		{{ form.as_table }}
+	</table>
+</form>
+
+
+{% endblock %}

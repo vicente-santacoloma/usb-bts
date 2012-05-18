@@ -1,16 +1,14 @@
-{% extends "base.html" %}
+{% extends "base_bugs.html" %}
 
 # Display a form to report a bug
 # requires a variable 'form' of type BugForm
 
 {% block content %}
-
-<form action="/bugs/create/" method='POST'>
+<form action="." method='POST'>
 {% csrf_token %}
 	<table>
-	{{ form.as_table }}
+		{{ form.as_table }}
 	</table>
 	<input type="submit" value="Report" />
 </form>
-
 {% endblock %}

@@ -1,8 +1,9 @@
-from django.forms.models import ModelForm
+from django import forms
 from django.contrib.auth.models import User
+from django.forms.models import ModelForm
 
-def BasicUserChangeForm(ModelForm):
+class BasicUserChangeForm(ModelForm):
     class Meta:
         model = User
-        fields = ('username','email','first_name','last_name')
-        
+        fields = ('first_name','last_name','email',)
+      

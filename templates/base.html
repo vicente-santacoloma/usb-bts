@@ -2,23 +2,48 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />
+        {% block head %} {% endblock %}
     </head>
     <body>
         <div id="wrap">
             <div id="header">
                 {% block header %}
-                
+                	<h1>Bug Tracking System</h1>
+                	<div id="user_authentication">
+	                	{% if not user.is_authenticated  %}
+	  							<a href="/users/login/">Log in</a> or <a href="/users/sign_up/">Sign up </a>
+						{% else %}
+						<ul>
+							  	<li><a href="/users/change/">My account</a></li>
+							  	<li><a href="/users/password_change/">Change password</a></li>
+							  	<li><a href="/users/logout/">Log out</a></li>
+						</ul>
+						{% endif %}
+					</div>
             	{% endblock %}
             </div>
             <div id="top_menu">
+            <ul>
             	{% block top_menu %}
             	
+						<li><a href="/bugs/browse/">Browse</a></li>
+					{% if user.is_authenticated %}					
+					
+						<li><a href="/social/message_list">Messages</a></li>
+						<li><a href="/bugs/report">Report a bug</a></li>
+					
+					
+					{% endif %}
             	{% endblock %} 
+            	</ul>
             </div>
-            <div id="content">
+            <div id="wrap_content">
+            	<div id="content">
                 	{% block content %}
                 	
                 	{% endblock %}
+                </div>
             </div>
 	        <div id="footer">
 		        {% block footer %}

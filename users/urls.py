@@ -7,7 +7,6 @@ from django.contrib.auth.views import login, logout, password_change, \
 from django.core.context_processors import request
 from django.template.context import RequestContext
 from django.views.generic.edit import CreateView, UpdateView
-from users.custom_views import UserUpdateView
 from users.forms import BasicUserChangeForm
 
 urlpatterns = patterns('',
@@ -22,6 +21,5 @@ urlpatterns = patterns('',
                                                  'email_template_name': 'password_reset_email.html',
                                                  'subject_template_name': 'password_reset_subject.txt',
                                                  'post_reset_redirect': '/'}),
-    url(r'change/$', UserUpdateView.as_view(template_name='sign_up.html',
-                                            form_class=BasicUserChangeForm))
+    url(r'change/$', 'users.views.update')
 )

@@ -24,7 +24,7 @@ class Bug(models.Model):
   status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='U')
   priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES, default='N')
   date_reported = models.DateTimeField('date reported', auto_now_add=True)
-  date_changed = models.DateTimeField('date changed', auto_now=True)
+  date_changed = models.DateTimeField('date changed', null=True, blank=True)
   description = models.TextField()
   replication = models.TextField(verbose_name= "How to replicate the error?")
   visits = models.IntegerField(default=0)
@@ -35,6 +35,8 @@ class Bug(models.Model):
   
   def __unicode__(self):
     return self.title
+
+    
 
 class Component(models.Model):
   name = models.CharField(max_length=30, unique=True)

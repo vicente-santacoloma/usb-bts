@@ -1,7 +1,37 @@
-{% extends "base.html" %}
+{% extends "base_bugs.html" %}
 
 # Display a list of bugs
 # requires a variable 'component' of type component
+# and a variable 'bugs' of type Paginator
+
+{% block header %}
+	{{ block.super }}
+	<script>
+	$(document).ready(
+		function(){
+			$("th").click(function (){
+				order_by = $(this).attr("name");
+				var url = window.location.pathname;
+				url += "?order_by=" + order_by;
+				var other_params = '';
+				var params = window.location.search;
+				if(params){
+					var arr = (params.substring(1).indexOf('&') != -1? 
+								params.substring(1).split('&') : [params.substring(1)] );
+					var i = 0;
+					for ( i = 0 ; i < arr.length ; ++i){
+						var temp = arr[i].split('=');
+						if (temp[0] != 'order_by'){
+							other_params += '&' + temp[0] + '=' + temp[1];
+						}
+					}
+				}
+				url += other_params;
+				window.location = url;
+			})
+		});
+	</script>
+{% endblock %}
 
 {% block content %}
 
@@ -11,18 +41,36 @@
 
 <table border="1">
 	<theader>
-		<th>Bugs</th>
-		<th>Visits</th>
-		<th>Description</th>
+		<th name="title">Bugs</th>
+		<th name="visits">Visits</th>
+		<th name="priority">Priority</th>
+		<th name="description">Description</th>
 	</theader>
-{% for bug in component.bugs.all %}
+{% for bug in bugs %}
 	<tr>
-		<td><a href="/bugs/browse/{{ application.id }}/{{ component.id }}/{{ bug.id}}">{{ bug.title|truncatechars:20 }}</a>	 </td>
+		<td><a href="/bugs/browse/{{ component.application.id }}/{{ component.id }}/{{ bug.id}}/">{{ bug.title|truncatechars:20 }}</a>	 </td>
 		<td>{{ bug.visits}} </td>
+		<td>{{ bug.get_priority_display }} </td>
 		<td>{{ bug.description|truncatechars:40 }} </td>		
 	</tr>
 {% endfor %}
 </table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if bugs.has_previous %}
+            <a href="?page={{ bugs.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ bugs.number }} of {{ bugs.paginator.num_pages }}.
+        </span>
+
+        {% if bugs.has_next %}
+            <a href="?page={{ bugs.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 
 {% else %}
 	There's not bugs created in this component.

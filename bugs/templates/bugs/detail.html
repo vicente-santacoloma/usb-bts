@@ -1,0 +1,96 @@
+{% extends "base_bugs.html" %}
+
+# Display the detail of a bug object
+# requires a variable 'bug' of type Bug
+
+
+
+{% block content %}
+
+	<h1>{{ bug.title }}</h1>
+	
+	<p><span class="label">Application:</span> {{ bug.component.application.name }} </p>	
+	<p><span class="label">Component:</span> {{ bug.component.name }} </p>
+	<p><span class="label">Status:</span> {{ bug.get_status_display }} </p>
+	{% ifequal bug.status "D" %}
+		<p><span class="label">Original:</span> 
+		<a href="/bugs/browse/{{ bug.original.component.application.id }}/{{ bug.original.component.id }}/{{ bug.original.id }}/">
+			{{ bug.original.title }}
+		</a> 
+		</p>
+	{% endifequal %}
+	<p><span class="label">Priority:</span> {{ bug.get_priority_display }} </p>
+	<p><span class="label">Reported by:</span> {{ bug.reporter.username }} </p>
+	<p><span class="label">Date reported:</span> {{ bug.date_reported }} </p>
+	<p><span class="label">Status modified on:</span> {{ bug.date_changed }} </p>
+		
+	<div id="description">
+		<h3>Description</h3>
+		<p>{{ bug.description }}</p>
+	</div>
+	
+	<div id="replication">
+		<h3>How to replicate it?</h3>
+		<p>{{ bug.replication }}</p>
+	</div>	
+	
+	{% load comments %}
+	
+	{% if user.is_authenticated and user.email %} 
+		{% get_comment_form for bug as form %}
+		
+		<form action="{% comment_form_target %}" method="post">
+			{% csrf_token %}
+	  		<input type="hidden" name="next" value="{{ request.path }}" />
+	  		{% for field in form %}
+	    		{% if field.is_hidden %}
+	      			{{ field }}
+	    		{% else %}
+	      			{% if field.errors %}{{ field.errors }}{% endif %}
+				      <p
+				        {% if field.errors %} class="error"{% endif %}
+				        {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}
+				         {% ifequal field.name "name" %} style="display:none;"{% endifequal %}
+				         {% ifequal field.name "email" %} style="display:none;"{% endifequal %}
+				         {% ifequal field.name "url" %} style="display:none;"{% endifequal %}
+				         {% ifequal field.name "title" %} style="display:none;"{% endifequal %}>
+				        {{ field.label_tag }} {{ field }}
+				      </p>
+	    		{% endif %}
+	  		{% endfor %}
+			  <p class="submit">
+			    <input type="submit" name="post" value="Post comment" />
+			  </p>
+		</form>
+	{% endif %}
+	{% if not user.is_authenticated %}
+		Please <a href="/users/login/">log in</a> to submit comments.
+	{% elif not user.email %}
+		Please <a href="/users/change/">update your email</a> to submit comments.	
+	{% endif %}
+	
+	
+		
+		{% get_comment_list for bug as comment_list %}
+		<dl id="comments">
+		{% for comment in comment_list reversed %}    		
+			<div {% if not comment.user %}
+  		    		class="system_comment" 
+  		    	
+  		    	{% elif comment.user == bug.resolver %}
+  		    		class="resolver_comment" 
+  		    	{% endif %}>
+	  		    <dt id="c{{ forloop.counter }}" >
+			        {{ comment.submit_date }} - {{ comment.user.username }}
+			    </dt>
+			    <dd>
+			        <p>{{ comment.comment }}</p>
+	    		</dd>
+    		</div>
+		{% endfor %}
+		</dl>
+	
+	
+	
+
+{% endblock content %}

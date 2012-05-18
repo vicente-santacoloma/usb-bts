@@ -1,4 +1,5 @@
 
+from bugs.forms import BugForm
 from bugs.models import Bug, Component, Application
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
@@ -7,11 +8,14 @@ from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 
 urlpatterns = patterns('bugs.views',
-    url(r'^create/$', 'create'),
+    url(r'^report/$', 'select_component'),
+    url(r'^report/(?P<component_id>\d+)/$', 'report_bug'),
     url(r'^browse/$', ListView.as_view(model=Application,
-                                                      template_name='applications/browse.html')),
+                                        template_name='applications/browse.html')),
     url(r'^browse/(?P<application_id>\d+)/$', 'browse_components'),        
-    url(r'^browse/(?P<application_id>\d+)/(?P<component_id>\d+)$', 'browse_bugs'),  
+    url(r'^browse/(?P<application_id>\d+)/(?P<component_id>\d+)/$', 'browse_bugs'),
+    url(r'^browse/(?P<application_id>\d+)/(?P<component_id>\d+)/(?P<bug_id>\d+)/$', 'detail'), 
+    url(r'^json/(?P<application_id>\d+)/$', 'all_json_models'),
 )
 
 urlpatterns += patterns('',
@@ -19,4 +23,3 @@ urlpatterns += patterns('',
         model=Component, template_name='components/create.html')
     )
 )
-

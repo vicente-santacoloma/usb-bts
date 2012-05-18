@@ -1,7 +1,9 @@
+from BTS import settings
 from django.conf.urls import patterns, url, include
+from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -18,4 +20,8 @@ urlpatterns = patterns('',
     url(r'^users/', include('users.urls')),
     url(r'^social/', include('social.urls')),
     url(r'^bugs/', include('bugs.urls')),
+    (r'^comments/', include('django.contrib.comments.urls')),
 )
+
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
