@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Message(models.Model):
     content = models.TextField()
-    date_sent = models.DateTimeField(auto_now_add=True)
+    date_sent = models.DateTimeField('date sent',auto_now_add=True)
     sender = models.ForeignKey(User, related_name='messages_sent')
     receiver = models.ForeignKey(User, related_name='messages_received')
 
