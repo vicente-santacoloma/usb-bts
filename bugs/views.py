@@ -24,9 +24,10 @@ def browse_bugs(request,application_id, component_id):
     if orderby not in ('title','visits','priority','description'):
         orderby = 'title'
 
-    bug_list = component.bugs.all().order_by(orderby)
+    bug_list = component.bugs.all().order_by(
+                (request.GET.get('order') if request.GET.get('order') == "" or  request.GET.get('order') == "-"  else "" ) + orderby)
         
-    paginator = Paginator(bug_list, 2) # Show 25 contacts per page
+    paginator = Paginator(bug_list, 25) # Show 25 contacts per page
 
     page = request.GET.get('page')
     try:

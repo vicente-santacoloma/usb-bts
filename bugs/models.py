@@ -10,14 +10,14 @@ class Application(models.Model):
         return self.name
 
 class Bug(models.Model):
-    STATUS_CHOICES = (
+  STATUS_CHOICES = (
         ('U', 'Unconfirmed'),
         ('A', 'Assigned'),
         ('R', 'Resolved'),
         ('D', 'Duplicate'),
         ('C', 'Closed')
   )
-    PRIORITY_CHOICES = (
+  PRIORITY_CHOICES = (
                       ('H','High'),
                       ('N','Normal'),
                       ('L','Low'))
@@ -34,8 +34,8 @@ class Bug(models.Model):
   resolver = models.ForeignKey(User, related_name='bugs_resolving', null=True, blank=True)
   component = models.ForeignKey('Component', related_name='bugs')
   
-    def __unicode__(self):
-        return self.title
+  def __unicode__(self):
+      return self.title
 
     
 
