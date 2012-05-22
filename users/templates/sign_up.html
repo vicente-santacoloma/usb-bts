@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>{{ "Sign Up" }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -9,3 +13,5 @@
 	</table>
 	<input type="submit" value="Sign Up" />
 </form>
+
+{% endblock %}

@@ -4,7 +4,7 @@
 # requires a variable 'component' of type component
 # and a variable 'bugs' of type Paginator
 
-{% block header %}
+{% block head %}
 	{{ block.super }}
 	<script>
 	function gup( name )
@@ -26,9 +26,6 @@
 				url += "?order_by=" + order_by + ( gup("page") != '' ? "&page=" + gup("page") : "");
 				window.location = url;
 			})
-		});
-	$(document).ready( function() {
-		alert($(window.location.search).attr("order_by"));
 		});
 	</script>
 {% endblock %}

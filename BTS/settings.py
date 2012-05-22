@@ -167,5 +167,6 @@ DEFAULT_FROM_EMAIL='tamerdark@gmail.com'
 TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + (
     'django.core.context_processors.request',
     'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
 )
 

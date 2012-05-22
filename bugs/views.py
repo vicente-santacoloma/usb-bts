@@ -1,6 +1,7 @@
 # Create your views here.
 from bugs.forms import BugForm, SelectComponentForm
 from bugs.models import Component, Application, Bug
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.exceptions import FieldError

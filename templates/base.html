@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static "style.css" %} " />
         {% block head %} {% endblock %}
     </head>
     <body>
@@ -25,21 +26,22 @@
             </div>
             <div id="top_menu">
             <ul>
-            	{% block top_menu %}
-            	
-						<li><a href="/bugs/browse/">Browse</a></li>
-					{% if user.is_authenticated %}					
-					
-						<li><a href="/social/message_list">Messages</a></li>
-						<li><a href="/bugs/report">Report a bug</a></li>
-					
-					
-					{% endif %}
+            	{% block top_menu %}            	
+					<li><a href="/bugs/browse/">Browse</a></li>
+					<li><a href="/social/message_list">Messages</a></li>
+					<li><a href="/bugs/report">Report a bug</a></li>
             	{% endblock %} 
             	</ul>
             </div>
             <div id="wrap_content">
             	<div id="content">
+            	   {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 	{% block content %}
                 	
                 	{% endblock %}
