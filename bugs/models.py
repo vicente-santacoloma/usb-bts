@@ -16,21 +16,44 @@ class Bug(models.Model):
             ("confirm_bug", "Confirm an unconfirmed bug"),
             ("assign_bug", "Assign a User to resolve a Bug"),
         )
+    STATUS_UNCONFIRMED = 1
+    STATUS_CONFIRMED = 2
+    STATUS_ASSIGNED = 3
+    STATUS_RESOLVED = 5
+    STATUS_VERIFIED = 6
+    STATUS_REOPENED = 7
+    STATUS_CLOSED = 8
     STATUS_CHOICES = (
-          ('U', 'Unconfirmed'),
-          ('X', 'Confirmed'),
-          ('A', 'Assigned'),
-          ('R', 'Resolved'),
-          ('D', 'Duplicate'),
-          ('C', 'Closed')
+          (STATUS_UNCONFIRMED, 'Unconfirmed'),
+          (STATUS_CONFIRMED, 'Confirmed'),
+          (STATUS_ASSIGNED, 'Assigned'),
+          (STATUS_RESOLVED, 'Resolved'),
+          (STATUS_VERIFIED, 'Verified'),
+          (STATUS_CLOSED, 'Closed'),
+          (STATUS_REOPENED, 'Reopened')
     )
+    PRIORITY_HIGH = 'H'
+    PRIORITY_NORMAL = 'N'
+    PRIORITY_LOW = 'L'
     PRIORITY_CHOICES = (
-                        ('H','High'),
-                        ('N','Normal'),
-                        ('L','Low'))
-    title = models.CharField(max_length=50)  
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='U')
-    priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES, default='N')
+                        (PRIORITY_HIGH,'High'),
+                        (PRIORITY_NORMAL,'Normal'),
+                        (PRIORITY_LOW,'Low'))
+    title = models.CharField(max_length=50)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_UNCONFIRMED)
+    RESOLUTION_FIXED = 1
+    RESOLUTION_DUPLICATED = 2
+    RESOLUTION_WONTFIX = 3
+    RESOLUTION_WORKSFORME = 4
+    RESOLUTION_INVALID = 5
+    RESOLUTION_CHOICES = (
+                        (RESOLUTION_FIXED,'Fixed'),
+                        (RESOLUTION_DUPLICATED,'Duplicated'),
+                        (RESOLUTION_WONTFIX,"Won't fix"),
+                        (RESOLUTION_WORKSFORME,"Wrong resolution"),
+                        (RESOLUTION_INVALID,"Invalid"))
+    resolution = models.IntegerField(choices=RESOLUTION_CHOICES, null=True, blank=True)
+    priority = models.CharField(max_length=1, choices=PRIORITY_CHOICES, default=PRIORITY_NORMAL)
     date_reported = models.DateTimeField('date reported', auto_now_add=True)
     date_changed = models.DateTimeField('date changed', null=True, blank=True)
     description = models.TextField()
@@ -43,6 +66,75 @@ class Bug(models.Model):
     
     def __unicode__(self):
         return self.title
+    
+    def is_assignable(self):
+        return self.status in (Bug.STATUS_UNCONFIRMED,
+                              Bug.STATUS_CONFIRMED,
+                              Bug.STATUS_REOPENED)
+        
+    def is_confirmable(self):
+        return self.status in (Bug.STATUS_UNCONFIRMED,
+                              Bug.STATUS_ASSIGNED)
+        
+    def is_resolvable(self):
+        return self.status in (Bug.STATUS_UNCONFIRMED,
+                              Bug.STATUS_CONFIRMED,
+                              Bug.STATUS_REOPENED,
+                              Bug.STATUS_ASSIGNED)
+        
+    def is_verifiable(self):
+        return self.status in (Bug.STATUS_RESOLVED)
+    
+    def is_closeable(self):
+        return self.status in (Bug.STATUS_RESOLVED,
+                                   Bug.STATUS_VERIFIED)
+    
+    def is_reopenable(self):
+        return self.status in (Bug.STATUS_CLOSED,
+                                   Bug.STATUS_VERIFIED,
+                                   Bug.STATUS_REOPENED)
+    
+    def has_been_confirmed(self):
+        return self.status != self.STATUS_UNCONFIRMED
+    
+    def update_status(self, status, resolver=None, original=None, resolution=None):
+        if status == Bug.STATUS_CONFIRMED:
+            if self.is_confirmable():
+                self.resolver = None
+                self.status = status
+                return True
+        elif status == Bug.STATUS_ASSIGNED:
+            if self.is_assignable() and not resolver is None:
+                self.resolver = resolver
+                self.status = status
+                return True            
+        elif status == Bug.STATUS_RESOLVED:
+            if self.is_resolvable() and not resolution is None:
+                if resolution == Bug.RESOLUTION_DUPLICATED:
+                    if original is None or original == self:
+                        return False
+                    self.original = original
+                self.resolution = resolution
+                self.status = status
+                self.resolver = None
+                return True
+        elif status == Bug.STATUS_VERIFIED:
+            if self.is_verifiable() :
+                self.status = status
+                return True
+        elif status == Bug.STATUS_CLOSED:
+            if self.is_closeable() :
+                self.status = status
+                return True
+        elif status == Bug.STATUS_REOPENED:
+            if self.is_reopenable() :
+                self.resolver = None
+                self.resolution = None
+                self.original = None
+                self.status = status
+                return True
+        # SI LLEGA ACA, OCURRIO UN UN ERROR
+
 
 class Component(models.Model):
     name = models.CharField(max_length=30, unique=True)

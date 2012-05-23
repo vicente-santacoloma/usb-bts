@@ -18,8 +18,9 @@ urlpatterns = patterns('bugs.views',
     url(r'^json/(?P<application_id>\d+)/$', 'all_json_models'),
     url(r'^unconfirmed/$', 'list_unconfirmed_bugs'),
     url(r'^to_resolve/$','list_to_resolve_bugs'),
-    url(r'^confirm/$','confirm_bug')
-    
+    url(r'^confirm/$','confirm_bug'),
+    url(r'^update_status/$', 'update_status'),
+    url(r'^assign/$', 'assign'),
 )
 
 urlpatterns += patterns('',
