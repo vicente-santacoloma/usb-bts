@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static "style.css" %} " />
         {% block head %} {% endblock %}
     </head>
     <body>
@@ -44,6 +45,13 @@
             </div>
             <div id="wrap_content">
             	<div id="content">
+            	   {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 	{% block content %}
                 	
                 	{% endblock %}

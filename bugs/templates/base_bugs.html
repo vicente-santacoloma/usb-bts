@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<script type="text/javascript" src="{{ STATIC_URL }}jquery.js"></script>
+{% block head %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static "jquery.js" %}"></script>
 {% endblock %}

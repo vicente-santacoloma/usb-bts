@@ -2,13 +2,14 @@
 from bugs.forms import BugForm, SelectComponentForm
 from bugs.models import Component, Application, Bug
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.exceptions import FieldError
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404, \
-    get_list_or_404
+from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.template.context import RequestContext
 from users.forms import SelectUserForm
 
