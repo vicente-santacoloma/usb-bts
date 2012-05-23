@@ -1,14 +1,16 @@
 # Create your views here.
 from bugs.forms import BugForm, SelectComponentForm
 from bugs.models import Component, Application, Bug
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.core.exceptions import FieldError
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, \
+    get_list_or_404
 from django.template.context import RequestContext
+from users.forms import SelectUserForm
 
 def browse_components(request,application_id):
     application = get_object_or_404(Application,pk=application_id)
@@ -47,7 +49,8 @@ def detail(request, application_id, component_id, bug_id):
     # THIS IS TOO SIMPLE, RELOAD THE PAGE WILL INCREASE THE VISITS
     bug.visits += 1
     bug.save()
-    return render_to_response('bugs/detail.html', {'bug': bug}, 
+    f = SelectUserForm()
+    return render_to_response('bugs/detail.html', {'bug': bug, 'f': f}, 
                               context_instance=RequestContext(request))
 
 def all_json_models(request, application_id):
@@ -80,5 +83,37 @@ def select_component(request):
     else:        
         form = SelectComponentForm()
     return render_to_response('components/select.html',
-                              {'form': form },
+                              {'form    ': form },
                                 context_instance=RequestContext(request))
+
+@login_required
+@permission_required('bugs.list_unconfirmed_bugs')
+def list_unconfirmed_bugs(request):
+    bugs = get_list_or_404(Bug,status='U')
+    return render_to_response('bugs/unconfirmed.html', 
+                                {'bugs': bugs },
+                                context_instance=RequestContext(request))
+    
+@login_required
+def list_to_resolve_bugs(request):
+    bugs = get_list_or_404(Bug,resolver=request.user)
+    return render_to_response('bugs/to_resolve.html', 
+                                {'bugs': bugs },
+                                context_instance=RequestContext(request))
+
+@login_required
+def confirm_bug(request):
+    bug = get_object_or_404(Bug,pk=request.POST['bug_id'])
+    bug.status = "X"
+    bug.save()
+    f = SelectUserForm()
+    return render_to_response('bugs/detail.html', {'bug': bug, 'f': f}, 
+                              context_instance=RequestContext(request))
+    
+    
+
+    
+    
+    
+    
+      

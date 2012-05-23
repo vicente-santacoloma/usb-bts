@@ -3,8 +3,6 @@
 # Display the detail of a bug object
 # requires a variable 'bug' of type Bug
 
-
-
 {% block content %}
 
 	<h1>{{ bug.title }}</h1>
@@ -12,6 +10,13 @@
 	<p><span class="label">Application:</span> {{ bug.component.application.name }} </p>	
 	<p><span class="label">Component:</span> {{ bug.component.name }} </p>
 	<p><span class="label">Status:</span> {{ bug.get_status_display }} </p>
+	{% if perms.bugs.confirm_bug and bug.status == "U" %}
+		<form action="/bugs/confirm/" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="bug_id" value="{{bug.id }}">
+ 			<input type="submit" value="Confirm" /> 
+		</form>
+	{% endif %}
 	{% ifequal bug.status "D" %}
 		<p><span class="label">Original:</span> 
 		<a href="/bugs/browse/{{ bug.original.component.application.id }}/{{ bug.original.component.id }}/{{ bug.original.id }}/">
@@ -62,6 +67,15 @@
 			    <input type="submit" name="post" value="Post comment" />
 			  </p>
 		</form>
+		{% if perms.bugs.assign_bug %}
+			<form action="" method="post">
+	    		{% csrf_token %}
+	    			<h3> Assign Bug</h3>
+					{{ f }}	
+					<input type="submit" value="Assign" />
+			</form>
+		{% endif %}
+
 	{% endif %}
 	{% if not user.is_authenticated %}
 		Please <a href="/users/login/">log in</a> to submit comments.
@@ -89,8 +103,5 @@
     		</div>
 		{% endfor %}
 		</dl>
-	
-	
-	
 
 {% endblock content %}

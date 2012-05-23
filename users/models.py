@@ -5,11 +5,9 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 class UserProfile(models.Model):
+    
     # Required field
     user = models.OneToOneField(User)
-    
-    # Additional fields
-    is_gate_keeper = models.BooleanField()
 
 # Asegurarse de crear el UserProfile luego de guardar una instancia de usuario
 def create_user_profile(sender, instance, created, **kwargs):

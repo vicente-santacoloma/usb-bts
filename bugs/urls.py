@@ -16,6 +16,10 @@ urlpatterns = patterns('bugs.views',
     url(r'^browse/(?P<application_id>\d+)/(?P<component_id>\d+)/$', 'browse_bugs'),
     url(r'^browse/(?P<application_id>\d+)/(?P<component_id>\d+)/(?P<bug_id>\d+)/$', 'detail'), 
     url(r'^json/(?P<application_id>\d+)/$', 'all_json_models'),
+    url(r'^unconfirmed/$', 'list_unconfirmed_bugs'),
+    url(r'^to_resolve/$','list_to_resolve_bugs'),
+    url(r'^confirm/$','confirm_bug')
+    
 )
 
 urlpatterns += patterns('',

@@ -21,5 +21,6 @@ urlpatterns = patterns('',
                                                  'email_template_name': 'password_reset_email.html',
                                                  'subject_template_name': 'password_reset_subject.txt',
                                                  'post_reset_redirect': '/'}),
-    url(r'change/$', 'users.views.update')
+    url(r'change/$', 'users.views.update'),
+#   url(r'assign/$', assign_user)
 )
