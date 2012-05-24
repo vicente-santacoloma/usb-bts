@@ -1,7 +1,7 @@
 # Create your views here.
 from BTS import settings
 from bugs.forms import BugForm, SelectComponentForm, SelectBugStatusForm, \
-    AssignBugForm
+    AssignBugForm, UpdateBugStatusForm
 from bugs.models import Component, Application, Bug
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, login_required, \
@@ -52,16 +52,18 @@ def browse_bugs(request,application_id, component_id):
                               context_instance=RequestContext(request))
 
 def detail(request, application_id, component_id, bug_id):
-    bug = get_object_or_404(Bug,pk=bug_id)
+    b = get_object_or_404(Bug,pk=bug_id)
     # THIS IS TOO SIMPLE, RELOAD THE PAGE WILL INCREASE THE VISITS
-    bug.visits += 1
-    bug.save()
-    f = AssignBugForm(initial={'bug_id': bug.id})
-    status_form = SelectBugStatusForm(initial={'status': bug.status,
-                                               'bug_id': bug.id })
-    return render_to_response('bugs/detail.html', {'bug': bug, 
-                                                   'assign_form': f,
-                                                   'status_form': status_form}, 
+    b.visits += 1
+    b.save()
+    #f = AssignBugForm(initial={'bug_id': bug.id})
+    #status_form = SelectBugStatusForm(initial={'status': bug.status,
+                                             #  'bug_id': bug.id })
+    update_form = UpdateBugStatusForm(bug=b)
+    return render_to_response('bugs/detail.html', {'bug': b, 
+                                              #     'assign_form': f,
+                                               #    'status_form': status_form,
+                                                   'update_form': update_form}, 
                               context_instance=RequestContext(request))
 
 def all_json_models(request, application_id):
@@ -122,36 +124,37 @@ def confirm_bug(request):
                               context_instance=RequestContext(request))
 
 @login_required
-def update_status(request):
+def update_status(request, bug_id):
+    bug = get_object_or_404(Bug,pk=bug_id)
     if request.method == 'POST':
-        bugF = SelectBugStatusForm(request.POST)
-        if bugF.is_valid():
-            bug = get_object_or_404(Bug,pk=bugF.cleaned_data['bug_id'])
-            bug.status = bugF.cleaned_data['status'];
-            if bug.status == Bug.STATUS_DUPLICATED:
-                bug.original = Bug.objects.get(pk=bugF.cleaned_data['original'])
-            else:
-                bug.original = None
-            if bug.status != Bug.STATUS_ASSIGNED:
-                bug.resolver = None
-            # HAY QUE GUARDAR EN LOS COMENTARIOS EL CAMBIO DE STATUS
-            bug.save()
-            c = Comment()
-            c.content_type = ContentType.objects.get(app_label="bugs", model="bug")
-            c.object_pk = bug.pk
-            c.site = Site.objects.get(id=settings.SITE_ID)
-            c.comment = '{0} has changed the status to {1}'.format(request.user.username,
-                                                                   bug.get_status_display())
-            c.save()
-            return HttpResponseRedirect('/bugs/browse/{0}/{1}/{2}'.format(
-                                        bug.component.application.id,
-                                        bug.component.id,
-                                        bug.id))
-        else:
-            messages.error(request, "An error occur while trying to save the new status.")
-            return HttpResponseRedirect(reverse('BTS_home'))
+        f = UpdateBugStatusForm(request.POST, bug=bug)
+        if f.is_valid():
+            resolver = (get_object_or_404(User,pk=f.cleaned_data['resolver']) if f.cleaned_data['resolver'] else request.user)
+            original = (get_object_or_404(Bug,pk=f.cleaned_data['original']) if f.cleaned_data['original'] else None)
+            resolution = f.cleaned_data['resolution']
+            if bug.update_status(status=f.cleaned_data['status'], 
+                                 resolver=resolver, 
+                                 original=original, 
+                                 resolution=resolution):
+                bug.save()
+                c = Comment()
+                c.content_type = ContentType.objects.get(app_label="bugs", model="bug")
+                c.object_pk = bug.pk
+                c.site = Site.objects.get(id=settings.SITE_ID)
+                c.comment = '{0} has changed the status to {1}'.format(request.user.username,
+                                                                       bug.get_status_display())
+                c.save()
+                messages.success(request, "The status has been updated successfully.")
+                return HttpResponseRedirect('/bugs/browse/{0}/{1}/{2}'.format(
+                                                bug.component.application.id,
+                                                bug.component.id,
+                                                bug.id))
     else:
-        return Http404()
+        f = UpdateBugStatusForm(bug=bug)
+    return render_to_response('bugs/detail.html',
+                              {'bug': bug,
+                               'update_form': f},
+                              context_instance=RequestContext(request))
     
 @login_required
 def assign(request):
