@@ -6,7 +6,7 @@ from bugs.models import Component, Application, Bug
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, login_required, \
     permission_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
@@ -76,7 +76,11 @@ def all_json_models(request, application_id):
 def report_bug(request,component_id):    
     c =get_object_or_404(Component,pk=component_id)
     if request.method == 'POST':
-        bug = Bug(reporter=request.user,component=c)
+        user = request.user
+        bug = Bug(reporter=user,component=c)
+        if (Group.objects.get(name='Gatekeeper') in user.groups.filter()):
+            bug.update_status(status=Bug.STATUS_CONFIRMED)
+        
         form = BugForm(request.POST, instance=bug)
         if form.is_valid():
             form.save()
