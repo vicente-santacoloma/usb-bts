@@ -11,12 +11,7 @@ class Application(models.Model):
         return self.name
 
 class Bug(models.Model):
-    class Meta:
-        permissions = (
-            ("list_unconfirmed_bugs", "Can see unconfirmed bugs"),
-            ("confirm_bug", "Confirm an unconfirmed bug"),
-            ("assign_bug", "Assign a User to resolve a Bug"),
-        )
+
     STATUS_UNCONFIRMED = 1
     STATUS_CONFIRMED = 2
     STATUS_ASSIGNED = 3
