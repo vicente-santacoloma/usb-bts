@@ -113,7 +113,7 @@ def list_unconfirmed_bugs(request):
     
 @login_required
 def list_to_resolve_bugs(request):
-    bugs = Bug.objects.filter(resolver=request.user)
+    bugs = Bug.objects.filter(resolver=request.user,status=Bug.STATUS_ASSIGNED)
     return render_to_response('bugs/to_resolve.html', 
                                 {'bugs': bugs },
                                 context_instance=RequestContext(request))

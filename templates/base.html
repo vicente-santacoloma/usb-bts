@@ -10,12 +10,14 @@
         <div id="wrap">
             <div id="header">
                 {% block header %}
-                	<h1 id="title">Bug Tracking System</h1>
+                	<h1 id="title" onclick="window.location='/'">Bug Tracking System</h1>
                 	<div id="user_authentication">
 	                	{% if not user.is_authenticated  %}
 	  							<a href="/users/login/">Log in</a> or <a href="/users/sign_up/">Sign up </a>
 						{% else %}
+						
 						<ul>
+							<li>Hello, {{ user.username|title }} </li>
 							  	<li><a href="/users/change/">My account</a></li>
 							  	<li><a href="/users/password_change/">Change password</a></li>
 							  	<li><a href="/users/logout/">Log out</a></li>
@@ -27,11 +29,12 @@
             <div id="top_menu">
                 <ul>
             	{% block top_menu %}
-            			
-						<li><a href="/bugs/browse/">Browse</a></li>
-					{% if user.is_authenticated %}					
+            			{% if user.is_staff %}
+            			<li><a href="/admin/">Admin site</a></li>
+            			{% endif %}
+						<li><a href="/bugs/browse/">Browse</a></li>		
 					
-						<li><a href="/social/message_list">Messages</a></li>
+						<li><a href="/social/">Messages</a></li>
 						<li><a href="/bugs/report">Report a bug</a></li>
 						<li><a href="/bugs/to_resolve">Bugs to Resolve</a></li>
 						
@@ -39,7 +42,6 @@
 							<li><a href="/bugs/unconfirmed">Unconfirmed Bugs</a></li>
 						{% endif %}
 					
-					{% endif %}
             	{% endblock %} 
             	</ul>
             </div>

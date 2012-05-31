@@ -3,14 +3,36 @@
 # Display a form to send messages to another user
 # requires a variable 'message' of type MessageForm
 
+{% block head %}
+<style>
+.sender {
+	text-align: right;
+}
+
+.receiver {
+	text-align: left;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
-<form action="/social/send_message/" method='POST'>
+<form action="." method='POST'>
 {% csrf_token %}
 <table>
-	{{ message.as_table }}
+	{{ form.as_table }}
+	<tr><td></td><td style="text-align:right">
+	<input type="submit" value="Send" /></td></tr>
 	</table>
-	<input type="submit" value="Send" />
 </form>
+
+
+{% for m in messages_list %}
+	<div class={% if m.sender == user %}"sender"{% else %}"receiver"{% endif %}>
+		<p> {{ m.date_sent }} </p>
+		<p> {{ m.content }} </p>
+	</div>
+{% endfor %}
+
 
 {% endblock %}

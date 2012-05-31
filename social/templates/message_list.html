@@ -1,19 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Messages</h2>
-    <table>
-    <theader>
-    <th>Sent on</th>
-    <th>From</th>
-    <th>Content</th>
-    </theader>
-        {% for message in object_list %}
-	        <tr>
-		        <td>{{ message.date_sent }}</td>
-		        <td>{{ message.receiver.username }}</td>
-		        <td>{{ message.content|truncatechars:30 }}</td>
-	        </tr>
-        {% endfor %}
-    </table>
+	<h2>Conversations</h2>
+	{% if object_list %}
+	    <ul>
+	        {% for u in object_list %}
+		        <li><a href="/social/{{u.id}}/" > {{u.username}} </a></li>
+	        {% endfor %}
+	    </ul>
+	{% else %}
+ 		<p> You dont have any conversations! </p>
+	{% endif %}
 {% endblock %}
