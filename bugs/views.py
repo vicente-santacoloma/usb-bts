@@ -133,6 +133,8 @@ def update_status(request, bug_id):
     if request.method == 'POST':
         f = UpdateBugStatusForm(request.POST, bug=bug)
         if f.is_valid():
+            if not (request.user == bug.resolver or (bug.status != Bug.STATUS_ASSIGNED and request.user.has_perm("users.gatekeeper"))):
+                return Http404("You don't have privileges to change the status of this bug.")
             resolver = (get_object_or_404(User,pk=f.cleaned_data['resolver']) if f.cleaned_data['resolver'] else request.user)
             original = (get_object_or_404(Bug,pk=f.cleaned_data['original']) if f.cleaned_data['original'] else None)
             resolution = f.cleaned_data['resolution']
