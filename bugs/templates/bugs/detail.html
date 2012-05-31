@@ -11,7 +11,7 @@
 	<p><span class="label">Component:</span> {{ bug.component.name }} </p>
 	<p><span class="label">Status:</span> {{ bug.get_status_display }}</p>
 	{% if bug.resolver %}
-	<p><span class="label">Resolved by:</span> {{ bug.resolver.username }}</p>
+	<p><span class="label">Resolved by:</span> <a href="/social/{{ bug.resolver.id }}/">{{ bug.resolver.username }}</a></p>
 	{% endif %}
 	{% if bug.resolution %}
 	<p><span class="label">Resolution:</span> {{ bug.get_resolution_display }}</p>
@@ -24,7 +24,7 @@
 		</p>
 	{% endif %}
 	<p><span class="label">Priority:</span> {{ bug.get_priority_display }} </p>
-	<p><span class="label">Reported by:</span> {{ bug.reporter.username }} </p>
+	<p><span class="label">Reported by:</span> <a href="/social/{{ bug.reporter.id }}/">{{ bug.reporter.username }}</a> </p>
 	<p><span class="label">Date reported:</span> {{ bug.date_reported }} </p>
 	<p><span class="label">Status modified on:</span> {{ bug.date_changed }} </p>
 		
@@ -87,7 +87,7 @@
   		    		class="resolver_comment" 
   		    	{% endif %}>
 	  		    <dt id="c{{ forloop.counter }}" >
-			        {{ comment.submit_date }} - {{ comment.user.username }}
+			        {{ comment.submit_date }} - <a href="/social/{{ comment.user.id }}/">{{ comment.user.username }}</a>
 			    </dt>
 			    <dd>
 			        <p>{{ comment.comment }}</p>
