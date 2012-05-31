@@ -62,28 +62,31 @@ def update_status(self, status, resolver=None, original=None, resolution=None):
     pass
 
 class UpdateBugStatusForm(forms.Form):
-    status_choices = []
-    resolver_choices = [(0, "------------")]
-    resolution_choices = Bug.RESOLUTION_CHOICES
-    resolution_choices = ((0, "------------"),) + resolution_choices
-    original_choices = [(0, "------------")]
-    for user in User.objects.all():
-        resolver_choices.append( (user.id,user.username) )
-    for bug in Bug.objects.all():
-        original_choices.append( (bug.id, bug.title) )
-    status = forms.ChoiceField(choices=status_choices)
-    
-    resolver = forms.ChoiceField(choices=resolver_choices,required=False,error_messages = {'invalid_choice': 'Please select an user'})
-    resolution = forms.ChoiceField(choices=resolution_choices,required=False, error_messages = {'invalid_choice': 'Please select a solution'})
-    original = forms.ChoiceField(choices=original_choices,required=False,error_messages = {'invalid_choice': 'Please select the original bug'})
-    
+    status = forms.ChoiceField(choices=[])    
+    resolver = forms.ChoiceField(choices=[],required=False,error_messages = {'invalid_choice': 'Please select an user'})
+    resolution = forms.ChoiceField(choices=[],required=False, error_messages = {'invalid_choice': 'Please select a solution'})
+    original = forms.ChoiceField(choices=[],required=False,error_messages = {'invalid_choice': 'Please select the original bug'})
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None, 
         initial=None, error_class=ErrorList, label_suffix=':', 
-        empty_permitted=False,bug=None):
+        empty_permitted=False, bug=None):
+        if bug is None:
+            print "NO CREAR UpdateBugStatusForm sin pasar un bug"
+            pass # Error, debe llamarse con Bug
         forms.Form.__init__(self, data=data, files=files, auto_id=auto_id, prefix=prefix, initial=initial, error_class=error_class, label_suffix=label_suffix, empty_permitted=empty_permitted)
-        if not bug is None:
-            self.status_choices = bug.get_status_choices()
-            self.fields['status'].choices = self.status_choices
+        status_choices = bug.get_status_choices()
+        resolver_choices = [(0, "------------")]
+        resolution_choices = Bug.RESOLUTION_CHOICES
+        resolution_choices = ((0, "------------"),) + resolution_choices
+        original_choices = [(0, "------------")]
+        for user in User.objects.all():
+            resolver_choices.append( (user.id,user.username) )
+        for bug in Bug.objects.all():
+            original_choices.append( (bug.id, bug.title) )
+        self.fields['resolver'].choices = resolver_choices
+        self.fields['original'].choices = original_choices
+        self.fields['status'].choices = status_choices
+        self.fields['resolution'].choices = resolution_choices
+
     def is_valid(self):
         r = self.fields['resolver'].choices.pop(0)
         s = self.fields['resolution'].choices.pop(0)
