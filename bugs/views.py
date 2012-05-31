@@ -104,16 +104,16 @@ def select_component(request):
                                 context_instance=RequestContext(request))
 
 @login_required
-@permission_required('bugs.list_unconfirmed_bugs')
+@permission_required('users.gatekeeper')
 def list_unconfirmed_bugs(request):
-    bugs = get_list_or_404(Bug,status='U')
+    bugs = Bug.objects.filter(status=Bug.STATUS_UNCONFIRMED)
     return render_to_response('bugs/unconfirmed.html', 
                                 {'bugs': bugs },
                                 context_instance=RequestContext(request))
     
 @login_required
 def list_to_resolve_bugs(request):
-    bugs = get_list_or_404(Bug,resolver=request.user)
+    bugs = Bug.objects.filter(resolver=request.user)
     return render_to_response('bugs/to_resolve.html', 
                                 {'bugs': bugs },
                                 context_instance=RequestContext(request))
@@ -163,6 +163,7 @@ def update_status(request, bug_id):
                               context_instance=RequestContext(request))
     
 @login_required
+@permission_required('users.gatekeeper')
 def assign(request):
     if request.method == 'POST':
         assignForm = AssignBugForm(request.POST)

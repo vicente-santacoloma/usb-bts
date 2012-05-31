@@ -5,6 +5,11 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 class UserProfile(models.Model):
+      
+    class Meta:
+        permissions = (
+            ("gatekeeper", "The user is a gatekeeper"),
+        )  
     
     # Required field
     user = models.OneToOneField(User)
