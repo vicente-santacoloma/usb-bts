@@ -2,21 +2,25 @@
 
 {% block content %}
 
-<table border="1">
-	<theader>
-		<th>Bugs</th>
-		<th>Visits</th>
-		<th>Priority</th>
-		<th>Description</th>
-	</theader>
-{% for bug in bugs %}
-	<tr>
-		<td><a href="/bugs/browse/{{ bug.component.application.id }}/{{ bug.component.id }}/{{ bug.id}}/">{{ bug.title|truncatechars:20 }}</a>	 </td>
-		<td>{{ bug.visits}} </td>
-		<td>{{ bug.get_priority_display }} </td>
-		<td>{{ bug.description|truncatechars:40 }} </td>
-	</tr>
-{% endfor %}
-</table>
+{% if bug %}
+	<table border="1">
+		<theader>
+			<th>Bugs</th>
+			<th>Visits</th>
+			<th>Priority</th>
+			<th>Description</th>
+		</theader>
+	{% for bug in bugs %}
+		<tr>
+			<td><a href="/bugs/browse/{{ bug.component.application.id }}/{{ bug.component.id }}/{{ bug.id}}/">{{ bug.title|truncatechars:20 }}</a>	 </td>
+			<td>{{ bug.visits}} </td>
+			<td>{{ bug.get_priority_display }} </td>
+			<td>{{ bug.description|truncatechars:40 }} </td>
+		</tr>
+	{% endfor %}
+	</table>
+{% else %}
+	<p> There is non unconfirmed bugs! </p>
+{% endif %}
 
 {% endblock %}	

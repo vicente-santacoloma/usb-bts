@@ -7,6 +7,7 @@ from bugs.models import Bug, Application, Component
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
+from django.core.context_processors import request
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms.models import ModelForm

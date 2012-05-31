@@ -35,7 +35,7 @@
 						<li><a href="/bugs/report">Report a bug</a></li>
 						<li><a href="/bugs/to_resolve">Bugs to Resolve</a></li>
 						
-						{% if perms.bugs.list_unconfirmed_bugs %}
+						{% if perms.users.gatekeeper %}
 							<li><a href="/bugs/unconfirmed">Unconfirmed Bugs</a></li>
 						{% endif %}
 					
