@@ -70,9 +70,9 @@
 
 	{% endif %}
 	{% if not user.is_authenticated %}
-		Please <a href="/users/login/">log in</a> to submit comments.
+		Please <a href="/users/login/?next=/bugs/browse/{{ bug.component.application.id }}/{{ bug.component.id }}/{{ bug.id }}/">log in</a> to submit comments.
 	{% elif not user.email %}
-		Please <a href="/users/change/">update your email</a> to submit comments.	
+		Please <a href="/users/change/?next=/bugs/browse/{{ bug.component.application.id }}/{{ bug.component.id }}/{{ bug.id }}/">update your email</a> to submit comments.	
 	{% endif %}
 	
 	

@@ -1,40 +1,61 @@
 
-#wrap {
-    margin: 20px auto 10px auto;
-    background: #33FF00;
+body {
+   // margin: 20px auto 10px auto;
+    background: #FFCCFF;
     padding: 10px;
-    border: 5px solid #CCCCCC;
+    border: 3px solid #CC00FF;
+    color: #CC00FF;
+}
+
+#wrap h1 {
+    color: #FF66CC;  
 }
 
 #header {
     height: 100px;
-    background: #2200FF;
+    text-align:center;
+}
+
+#title {
+    font-size: 2.5em;  
 }
 
 #top_menu {
-    height: 40px;
-    background: #22CCFF;
+    height: 30px;
+    background: #FF99FF;
+    font-size: 1.3em;
+}
+a {
+ text-decoration: none; 
+ font-weight:bold;   
+ font-size: 1em;
+}
+
+a:link {
+    color:#FF0099;       
+}
+
+a:visited {
+    color:#FF0099;       
+}
+
+a:hover {
+    color:#FFFFFF;      
+}
+
+a:clicked {
+    color:#FFFFFF;       
 }
 
 #top_menu ul {
     list-style-type: none;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 #top_menu ul li {
     display: block;
     float: left;
-}
-#top_menu ul li a {
     padding: 0 20px 0 0;
-    text-decoration: none;
-    font-weight: normal;
-    font-size: 0.875em;
-    color: #336600;
-}
-#top_menu ul li a:hover {
-    text-decoration: none;
-    color: #FFFFFF;
 }
 
 #user_authentication {
@@ -49,23 +70,31 @@
 }
 
 #wrap_content { 
-    background-color:#b0e0e6;
+    
 }
 
 #content {
     display: block;
-    float: left;
     width: 70%;
+    overflow: auto;
+    margin: 0px 40px;
 }
 
 #right_panel {
-    width: 30%;
-    display: block;
-    float: right;
+   width: 20%;
+   position:fixed;
+   top: 200px;
+   right:5px;
 }
 
 #footer {
 
+}
+
+
+#comments div{
+    border: 2px solid #CC00FF;  
+    padding: 2px;
 }
 
 .label {
@@ -73,9 +102,9 @@
 }
 
 .system_comment {
-    background-color:#eeeeee;
+    background-color:#99FFFF;
 }
 
 .resolver_comment {
-    background-color:#aaaaaa;
+    background-color:#99FF66;
 }

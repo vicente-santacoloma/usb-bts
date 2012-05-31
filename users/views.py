@@ -26,34 +26,19 @@ def sign_up(request):
                                     {'form': form}, 
                                     context_instance=RequestContext(request))
     
-def log_in(request):
-    c = {}
-    c.update(csrf(request))
-    if (request.method == 'GET') and not request.user.is_authenticated():
-        return render_to_response('log_in.html',c)
-    elif request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request,user)
-    return HttpResponseRedirect(reverse('BTS_home'))
-
-
-def log_out(request):
-  logout(request)
-  return HttpResponseRedirect(reverse('BTS_home'))
-  
-def update(request):
-    messages.debug(request, "This messsage is just for debugging purpose")
+def update(request):    
+    
     if request.method == 'POST':
         form = BasicUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('BTS_home'))
+            redirect_to = request.REQUEST.get('next', reverse('BTS_home'))
+            return HttpResponseRedirect(redirect_to)
     else:
         form = BasicUserChangeForm(instance=request.user)
+    redirect_to = request.REQUEST.get('next','')
     return render_to_response('update.html', 
-                              {'form':form},
+                              {'form':form,
+                               'next':redirect_to},
                               context_instance=RequestContext(request))
         

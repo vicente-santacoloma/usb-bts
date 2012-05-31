@@ -6,7 +6,7 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="." method="POST" >
+<form action="/users/change/{% if next %}?next={{ next }}{% endif %}" method="POST" >
 	{% csrf_token %}
 	<table>
 	{{ form.as_table }}

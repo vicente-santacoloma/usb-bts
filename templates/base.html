@@ -10,7 +10,7 @@
         <div id="wrap">
             <div id="header">
                 {% block header %}
-                	<h1>Bug Tracking System</h1>
+                	<h1 id="title">Bug Tracking System</h1>
                 	<div id="user_authentication">
 	                	{% if not user.is_authenticated  %}
 	  							<a href="/users/login/">Log in</a> or <a href="/users/sign_up/">Sign up </a>
@@ -25,7 +25,7 @@
             	{% endblock %}
             </div>
             <div id="top_menu">
-            <ul>
+                <ul>
             	{% block top_menu %}
             			
 						<li><a href="/bugs/browse/">Browse</a></li>
